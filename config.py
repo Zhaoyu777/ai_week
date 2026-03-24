@@ -16,5 +16,6 @@ class Config:
     ALIYUN_API_KEY = os.getenv('ALIYUN_API_KEY')
     ALIYUN_MODEL = os.getenv('ALIYUN_MODEL', 'qwen-turbo')
     ALIYUN_VL_MODEL = os.getenv('ALIYUN_VL_MODEL', 'qwen-omni-turbo') # For Image OCR
+    APP_ACCESS_PASSWORD = os.getenv('APP_ACCESS_PASSWORD', '213213')
     
     SECRET_KEY = os.getenv('FLASK_SECRET_KEY', 'dev_key')

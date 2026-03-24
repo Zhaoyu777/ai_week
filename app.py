@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session, redirect, url_for
 import requests
 import json
 import os
@@ -8,6 +8,7 @@ import base64
 from openai import OpenAI
 from data_store import data_store
 from logic.ai_config_logic import ai_config_logic
+from logic.access_auth_logic import access_auth_logic
 
 import httpx
 
@@ -18,6 +19,50 @@ os.environ.pop('https_proxy', None)
 
 app = Flask(__name__)
 app.config.from_object(Config)
+
+
+@app.before_request
+def require_login():
+    if access_auth_logic.is_public_request(request.path, request.endpoint):
+        return None
+
+    if access_auth_logic.is_authenticated(session):
+        return None
+
+    if access_auth_logic.is_api_request(request.path):
+        return jsonify({'error': '未登录或登录已失效'}), 401
+
+    next_path = request.full_path if request.query_string else request.path
+    return redirect(url_for('login', next=next_path.rstrip('?')))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    next_path = access_auth_logic.normalize_next_path(
+        request.values.get('next', request.args.get('next', '/'))
+    )
+
+    if request.method == 'GET':
+        if access_auth_logic.is_authenticated(session):
+            return redirect(next_path)
+        return render_template('login.html', error='', next_path=next_path)
+
+    password = request.form.get('password', '')
+
+    try:
+        access_auth_logic.authenticate(password, session, app.config)
+        app.logger.info('Access login success, remote_addr=%s', request.remote_addr)
+        return redirect(next_path)
+    except ValueError as e:
+        app.logger.warning('Access login failed, remote_addr=%s', request.remote_addr)
+        return render_template('login.html', error=str(e), next_path=next_path), 401
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    access_auth_logic.logout(session)
+    return redirect(url_for('login'))
+
 
 @app.route('/')
 def index():
