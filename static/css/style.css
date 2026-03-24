@@ -1,0 +1,680 @@
+:root {
+    --bg-body: #f8f9fa;
+    --bg-card: #ffffff;
+    --text-main: #323232;
+    /* Changed to #323232 as requested */
+    --text-muted: #6c757d;
+    --border-color: #dee2e6;
+    --input-bg: #ffffff;
+    --input-border: #ced4da;
+    --navbar-bg: transparent;
+    /* Changed to Transparent */
+    --navbar-text: #323232;
+    /* Match main text */
+    --btn-primary-bg: #495057;
+    --btn-primary-border: #495057;
+    --btn-primary-hover: #343a40;
+
+    /* Low Saturation Tag Colors (Morandi/Pastel) */
+    --tag-primary: #8ab6d6;
+    /* Muted Blue */
+    --tag-success: #95d5b2;
+    /* Muted Green */
+    --tag-danger: #e5989b;
+    /* Muted Red */
+    --tag-warning: #e9c46a;
+    /* Muted Yellow */
+    --tag-info: #8ecae6;
+    /* Muted Cyan */
+    --tag-secondary: #adb5bd;
+    /* Muted Gray */
+    --tag-dark: #6c757d;
+    /* Muted Dark */
+}
+
+[data-theme="dark"] {
+    --bg-body: #121212;
+    --bg-card: #1e1e1e;
+    --text-main: #e0e0e0;
+    --text-muted: #adb5bd;
+    --border-color: #333333;
+    --input-bg: #2d2d2d;
+    --input-border: #404040;
+    --navbar-bg: transparent;
+    /* Changed to Transparent */
+    --navbar-text: #e0e0e0;
+    --btn-primary-bg: #343a40;
+    --btn-primary-border: #343a40;
+    --btn-primary-hover: #23272b;
+
+    /* Slightly brighter muted colors for dark mode contrast */
+    --tag-primary: #a0c4ff;
+    --tag-success: #b7e4c7;
+    --tag-danger: #ffadad;
+    --tag-warning: #fdffb6;
+    --tag-info: #9bf6ff;
+    --tag-secondary: #ced4da;
+    --tag-dark: #adb5bd;
+}
+
+[data-theme="eye-care"] {
+    --bg-body: #e3edcd;
+    /* Bean paste green */
+    --bg-card: #f0fbe0;
+    --text-main: #2e3b2a;
+    --text-muted: #5c6b58;
+    --border-color: #cdd6bc;
+    --input-bg: #fafff0;
+    --input-border: #aeb5a0;
+    --navbar-bg: transparent;
+    /* Changed to Transparent */
+    --navbar-text: #2e3b2a;
+    /* Changed to dark green text */
+    --btn-primary-bg: #5c7a45;
+    --btn-primary-border: #5c7a45;
+    --btn-primary-hover: #4a6338;
+}
+
+/* App Wrapper for Background and Layout */
+.app-wrapper {
+    /* Background moved to body to prevent white edges */
+    min-height: 100vh;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    background-color: var(--bg-body) !important;
+    color: var(--text-main) !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Flattened Card Style */
+.card {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    /* Slightly sharper corners */
+    box-shadow: none !important;
+    /* Remove shadows for flat design */
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    transition: background-color 0.3s;
+}
+
+.card:hover {
+    transform: none;
+    /* Disable hover lift */
+}
+
+.card-header {
+    border-top-left-radius: 8px !important;
+    border-top-right-radius: 8px !important;
+    background-color: var(--bg-card) !important;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+/* Flattened Modal */
+.modal-content {
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow for modal depth only */
+}
+
+/* Inputs & Forms */
+.form-control,
+.form-select {
+    background-color: var(--input-bg) !important;
+    /* Force background color */
+    border-color: var(--input-border);
+    color: var(--text-main) !important;
+    border-radius: 4px;
+    box-shadow: none !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+    background-color: var(--input-bg) !important;
+    color: var(--text-main) !important;
+    border-color: var(--navbar-bg);
+    /* Use primary color for focus */
+}
+
+/* Buttons */
+.btn {
+    border-radius: 4px;
+    box-shadow: none !important;
+    font-weight: 500;
+}
+
+/* Primary Button Override for Gray Style */
+.btn-primary {
+    background-color: var(--btn-primary-bg) !important;
+    border-color: var(--btn-primary-border) !important;
+    color: #fff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: var(--btn-primary-hover) !important;
+    border-color: var(--btn-primary-hover) !important;
+}
+
+/* Calendar Button Override - Stronger Selectors */
+.fc .fc-button-primary {
+    background-color: var(--btn-primary-bg) !important;
+    border-color: var(--btn-primary-border) !important;
+    color: #fff !important;
+    box-shadow: none !important;
+    text-transform: capitalize;
+}
+
+.fc .fc-button-primary:hover,
+.fc .fc-button-primary:focus,
+.fc .fc-button-primary:active,
+.fc .fc-button-primary.fc-button-active {
+    background-color: var(--btn-primary-hover) !important;
+    border-color: var(--btn-primary-hover) !important;
+    color: #fff !important;
+    box-shadow: none !important;
+}
+
+/* Calendar Header Cells (Weekdays) */
+.fc .fc-col-header-cell-cushion {
+    color: var(--text-main) !important;
+    text-decoration: none !important;
+    font-weight: 600;
+}
+
+/* Ensure header background matches theme */
+.fc .fc-col-header-cell {
+    background-color: var(--bg-body) !important;
+    /* Use body bg for header to blend in */
+    color: var(--text-main) !important;
+}
+
+/* Day Numbers */
+.fc .fc-daygrid-day-number {
+    color: var(--text-main) !important;
+    text-decoration: none !important;
+}
+
+/* Today Highlight */
+.fc .fc-day-today {
+    background-color: rgba(0, 0, 0, 0.03) !important;
+    /* Subtle highlight for light mode */
+}
+
+[data-theme="dark"] .fc .fc-day-today {
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    /* Subtle highlight for dark mode */
+}
+
+/* Calendar Border Colors */
+.fc-theme-standard td,
+.fc-theme-standard th,
+.fc-theme-standard .fc-scrollgrid {
+    border-color: var(--border-color) !important;
+}
+
+/* TinyMCE Dark Mode Complete Override */
+[data-theme="dark"] .tox-tinymce {
+    border-color: var(--border-color) !important;
+}
+
+[data-theme="dark"] .tox-editor-container,
+[data-theme="dark"] .tox-editor-header,
+[data-theme="dark"] .tox-toolbar,
+[data-theme="dark"] .tox-toolbar__primary,
+[data-theme="dark"] .tox-toolbar__overflow,
+[data-theme="dark"] .tox-menubar,
+[data-theme="dark"] .tox-statusbar {
+    background-color: #2d2d2d !important;
+    /* Match input bg */
+    color: #e0e0e0 !important;
+}
+
+/* Icons and Text in Toolbar */
+[data-theme="dark"] .tox-tbtn,
+[data-theme="dark"] .tox-mbtn,
+[data-theme="dark"] .tox-tbtn--select,
+[data-theme="dark"] .tox-tbtn__select-label,
+[data-theme="dark"] .tox-statusbar__path-item,
+[data-theme="dark"] .tox-statusbar__wordcount {
+    color: #e0e0e0 !important;
+}
+
+[data-theme="dark"] .tox-tbtn svg,
+[data-theme="dark"] .tox-tbtn__icon-wrap svg {
+    fill: #e0e0e0 !important;
+}
+
+[data-theme="dark"] .tox-tbtn:hover,
+[data-theme="dark"] .tox-mbtn:hover,
+[data-theme="dark"] .tox-tbtn--enabled,
+[data-theme="dark"] .tox-tbtn--enabled:hover {
+    background-color: #404040 !important;
+}
+
+[data-theme="dark"] .tox-edit-area__iframe {
+    background-color: #2d2d2d !important;
+}
+
+/* We can't easily style inside the iframe without content_css, but we can set the container bg */
+
+/* Calendar Adjustments */
+#calendar {
+    border: none;
+    background-color: var(--bg-card);
+    border-radius: 16px;
+    /* Rounder container */
+    padding: 10px;
+}
+
+.fc-theme-standard .fc-scrollgrid {
+    border: none !important;
+    /* Remove outer border */
+}
+
+/* Rounder Buttons */
+.fc .fc-button {
+    border-radius: 12px !important;
+}
+
+/* Day Cells Roundness & Spacing */
+.fc .fc-daygrid-day-frame {
+    margin: 4px;
+    border-radius: 12px;
+    transition: background-color 0.2s, transform 0.2s;
+    border: 1px solid transparent;
+    /* Reserve space for border */
+    cursor: pointer;
+    /* Change cursor to hand */
+}
+
+.fc .fc-daygrid-day-frame:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .fc .fc-daygrid-day-frame:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Hide internal borders for cleaner look */
+.fc-theme-standard td,
+.fc-theme-standard th {
+    border: none !important;
+}
+
+/* Header styling */
+.fc .fc-col-header-cell {
+    background-color: transparent !important;
+    padding-bottom: 10px !important;
+}
+
+.fc .fc-col-header-cell-cushion {
+    color: var(--text-muted) !important;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* Day Numbers */
+.fc .fc-daygrid-day-top {
+    justify-content: center;
+    /* Center day number */
+    padding-top: 4px;
+}
+
+.fc .fc-daygrid-day-number {
+    width: 28px;
+    height: 28px;
+    line-height: 28px;
+    text-align: center;
+    border-radius: 50%;
+    font-weight: 500;
+    color: var(--text-main) !important;
+    text-decoration: none !important;
+    transition: all 0.2s;
+}
+
+/* Today Highlight - Circular */
+.fc .fc-day-today {
+    background-color: transparent !important;
+    /* Remove default square bg */
+}
+
+.fc .fc-day-today .fc-daygrid-day-number {
+    background-color: var(--btn-primary-bg);
+    color: #fff !important;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Event Badges */
+.calendar-count-badge {
+    background-color: var(--tag-success) !important;
+    border-radius: 12px !important;
+    padding: 4px 8px !important;
+    font-size: 0.7rem !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.fc-toolbar-title {
+    font-weight: 700;
+    color: var(--text-main) !important;
+    font-size: 1.5rem !important;
+}
+
+/* Dark Mode Specifics for Input Placeholder/Text */
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+    color: #6c757d;
+}
+
+#reportContent {
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1.6;
+}
+
+.config-status-badge {
+    padding: 0.55rem 0.8rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+#configAlert {
+    margin-bottom: 1rem;
+}
+
+[data-theme="dark"] #currentApiKeyHint,
+[data-theme="dark"] .form-text {
+    color: #adb5bd !important;
+}
+
+/* Force dark background for all inputs in dark mode */
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select,
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select,
+[data-theme="dark"] .input-group-text {
+    background-color: var(--input-bg) !important;
+    color: #e0e0e0 !important;
+    /* Force light text */
+    border-color: var(--input-border) !important;
+}
+
+[data-theme="dark"] .form-control:focus,
+[data-theme="dark"] .form-select:focus {
+    background-color: var(--input-bg) !important;
+    color: #e0e0e0 !important;
+    /* Force light text on focus */
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    /* Light gray for light mode */
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    /* Dark gray for dark mode */
+}
+
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+}
+
+/* Chrome/Safari Autofill Override for Dark Mode */
+[data-theme="dark"] input:-webkit-autofill,
+[data-theme="dark"] input:-webkit-autofill:hover,
+[data-theme="dark"] input:-webkit-autofill:focus,
+[data-theme="dark"] textarea:-webkit-autofill,
+[data-theme="dark"] textarea:-webkit-autofill:hover,
+[data-theme="dark"] textarea:-webkit-autofill:focus,
+[data-theme="dark"] select:-webkit-autofill,
+[data-theme="dark"] select:-webkit-autofill:hover,
+[data-theme="dark"] select:-webkit-autofill:focus {
+    -webkit-text-fill-color: #e0e0e0 !important;
+    -webkit-box-shadow: 0 0 0px 1000px #2d2d2d inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.list-group-item {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+    border-color: var(--border-color);
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+/* Navbar theming */
+.navbar {
+    background-color: var(--navbar-bg) !important;
+    transition: background-color 0.3s;
+    box-shadow: none !important;
+    /* Remove shadow to blend in */
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.navbar-brand,
+.nav-link {
+    color: var(--navbar-text) !important;
+    font-weight: 500;
+}
+
+/* Nav Pills Customization for Transparent Header */
+.nav-pills .nav-link {
+    color: var(--text-muted) !important;
+    background-color: transparent !important;
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    transition: all 0.2s;
+}
+
+.nav-pills .nav-link.active {
+    color: var(--text-main) !important;
+    /* Use main text color for active */
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    /* Subtle background */
+    font-weight: 600;
+}
+
+[data-theme="dark"] .nav-pills .nav-link.active {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Theme Dropdown Toggle Color Override */
+#themeDropdown {
+    color: var(--navbar-text) !important;
+    border-color: var(--border-color) !important;
+}
+
+#themeDropdown:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] #themeDropdown:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Dark mode specific overrides for Bootstrap components */
+[data-theme="dark"] .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+[data-theme="dark"] .table {
+    color: var(--text-main);
+    border-color: var(--border-color);
+}
+
+/* Calendar Dark Mode Adjustments (Cleaned up as we have generic overrides above) */
+[data-theme="dark"] #calendar {
+    background-color: var(--bg-card);
+    color: var(--text-main);
+}
+
+/* Previous overrides for borders/cells/headers are now handled by generic .fc selectors with vars */
+
+/* Eye-care Mode Adjustments */
+[data-theme="eye-care"] .fc-col-header-cell {
+    background-color: #dcebc0;
+}
+
+[data-theme="eye-care"] .fc-day-today {
+    background-color: #d0e6b5 !important;
+}
+
+/* --- Low Saturation Tag Styles --- */
+
+/* 1. Tag Checkbox Buttons (Selection) */
+.tag-checkbox-group .btn-outline-primary {
+    color: var(--tag-primary);
+    border-color: var(--tag-primary);
+}
+
+.tag-checkbox-group .btn-check:checked+.btn-outline-primary {
+    background-color: var(--tag-primary);
+    border-color: var(--tag-primary);
+    color: #fff;
+}
+
+.tag-checkbox-group .btn-outline-success {
+    color: var(--tag-success);
+    border-color: var(--tag-success);
+}
+
+.tag-checkbox-group .btn-check:checked+.btn-outline-success {
+    background-color: var(--tag-success);
+    border-color: var(--tag-success);
+    color: #fff;
+}
+
+.tag-checkbox-group .btn-outline-danger {
+    color: var(--tag-danger);
+    border-color: var(--tag-danger);
+}
+
+.tag-checkbox-group .btn-check:checked+.btn-outline-danger {
+    background-color: var(--tag-danger);
+    border-color: var(--tag-danger);
+    color: #fff;
+}
+
+.tag-checkbox-group .btn-outline-warning {
+    color: var(--tag-warning);
+    border-color: var(--tag-warning);
+}
+
+.tag-checkbox-group .btn-check:checked+.btn-outline-warning {
+    background-color: var(--tag-warning);
+    border-color: var(--tag-warning);
+    color: #000;
+}
+
+.tag-checkbox-group .btn-outline-info {
+    color: var(--tag-info);
+    border-color: var(--tag-info);
+}
+
+.tag-checkbox-group .btn-check:checked+.btn-outline-info {
+    background-color: var(--tag-info);
+    border-color: var(--tag-info);
+    color: #000;
+}
+
+.tag-checkbox-group .btn-outline-secondary {
+    color: var(--tag-secondary);
+    border-color: var(--tag-secondary);
+}
+
+.tag-checkbox-group .btn-check:checked+.btn-outline-secondary {
+    background-color: var(--tag-secondary);
+    border-color: var(--tag-secondary);
+    color: #fff;
+}
+
+.tag-checkbox-group .btn-outline-dark {
+    color: var(--tag-dark);
+    border-color: var(--tag-dark);
+}
+
+.tag-checkbox-group .btn-check:checked+.btn-outline-dark {
+    background-color: var(--tag-dark);
+    border-color: var(--tag-dark);
+    color: #fff;
+}
+
+/* 2. Badges (Display) */
+.badge.bg-primary {
+    background-color: var(--tag-primary) !important;
+    color: #fff;
+}
+
+.badge.bg-success {
+    background-color: var(--tag-success) !important;
+    color: #fff;
+}
+
+.badge.bg-danger {
+    background-color: var(--tag-danger) !important;
+    color: #fff;
+}
+
+.badge.bg-warning {
+    background-color: var(--tag-warning) !important;
+    color: #000;
+}
+
+.badge.bg-info {
+    background-color: var(--tag-info) !important;
+    color: #000;
+}
+
+.badge.bg-secondary {
+    background-color: var(--tag-secondary) !important;
+    color: #fff;
+}
+
+.badge.bg-dark {
+    background-color: var(--tag-dark) !important;
+    color: #fff;
+}
+
+/* Calendar Event Badges */
+.calendar-count-badge {
+    background-color: var(--tag-success) !important;
+}

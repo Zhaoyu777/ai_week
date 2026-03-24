@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人工作记录工具</title>
+    <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/vendor/fontawesome/css/all.min.css" rel="stylesheet">
+    <script src="/static/js/marked.min.js"></script>
+    <link href="/static/css/style.css" rel="stylesheet">
+    <style>
+        #calendar {
+            max-width: 100%;
+            margin: 0 auto;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #fff;
+            padding: 10px;
+        }
+
+        .fc-toolbar-title {
+            font-size: 1.2rem !important;
+            font-weight: 600;
+        }
+
+        .fc-button {
+            background-color: #0d6efd !important;
+            border-color: #0d6efd !important;
+            font-size: 0.8rem !important;
+        }
+
+        .fc-button:hover {
+            background-color: #0b5ed7 !important;
+        }
+
+        .fc-daygrid-day-number {
+            text-decoration: none;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        .fc-col-header-cell {
+            background-color: #f8f9fa;
+            padding: 8px 0 !important;
+        }
+
+        .fc-day-today {
+            background-color: #e8f0fe !important;
+        }
+
+        .fc-event {
+            cursor: pointer;
+            border: none !important;
+            background: transparent !important;
+        }
+
+        .calendar-count-badge {
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .fc-daygrid-day-frame {
+            overflow: visible !important;
+        }
+
+        .fc-daygrid-day-events {
+            margin-bottom: 0 !important;
+        }
+
+        #ocrDropzone {
+            border: 2px dashed #dee2e6;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            background-color: #f8f9fa;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        #ocrDropzone.dragover {
+            border-color: #0d6efd;
+            background-color: #e9ecef;
+        }
+
+        #ocrPreviewContainer {
+            position: relative;
+            display: inline-block;
+            max-width: 100%;
+        }
+
+        #ocrPreviewImage {
+            max-height: 200px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #ocrRemoveBtn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-wrapper">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#"><i class="fas fa-book-open me-2"></i>工作记录</a>
+                <div class="navbar-nav ms-auto">
+                    <ul class="nav nav-pills" id="myTab" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active text-white" id="records-tab" data-bs-toggle="pill"
+                                data-bs-target="#records" type="button" role="tab" aria-controls="records"
+                                aria-selected="true">每日记录</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link text-white" id="report-tab" data-bs-toggle="pill"
+                                data-bs-target="#report" type="button" role="tab" aria-controls="report"
+                                aria-selected="false">AI周报</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link text-white" id="settings-tab" data-bs-toggle="pill"
+                                data-bs-target="#settings" type="button" role="tab" aria-controls="settings"
+                                aria-selected="false">AI配置</button>
+                        </li>
+                    </ul>
+
+                    <div class="dropdown ms-3 align-self-center">
+                        <button class="btn btn-outline-light btn-sm dropdown-toggle" type="button" id="themeDropdown"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-palette"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="themeDropdown">
+                            <li><a class="dropdown-item" href="#" onclick="setTheme('light')"><i
+                                        class="fas fa-sun me-2"></i>浅色模式</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setTheme('dark')"><i
+                                        class="fas fa-moon me-2"></i>深色模式</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="setTheme('eye-care')"><i
+                                        class="fas fa-leaf me-2"></i>护眼模式</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="records" role="tabpanel" aria-labelledby="records-tab">
+                    <div class="row">
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow-sm">
+                                <div class="card-body p-2">
+                                    <div id="calendar"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-8 mb-4">
+                            <div class="card shadow-sm mb-4">
+                                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="fas fa-pen me-2"></i><span id="formTitle">今日记录</span></h5>
+                                    <div>
+                                        <button class="btn btn-sm me-2" onclick="openTagModal()">
+                                            <i class="fas fa-tags me-1"></i>管理标签
+                                        </button>
+                                        <button class="btn btn-sm" onclick="resetForm()">重置</button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <form id="recordForm" onsubmit="return false;">
+                                        <input type="hidden" id="recordId">
+                                        <input type="hidden" id="recordDate">
+                                        <input type="hidden" id="recordTitle">
+
+                                        <div class="mb-3">
+                                            <button class="btn btn-outline-secondary w-100" type="button"
+                                                onclick="openOcrModal()">
+                                                <i class="fas fa-magic me-2"></i>AI 图片识别（支持截图粘贴）
+                                            </button>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <textarea id="recordContent" class="form-control"
+                                                placeholder="输入详细内容..."></textarea>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <div class="tag-checkbox-group d-flex gap-2 flex-wrap" id="tagContainer"></div>
+                                        </div>
+
+                                        <div class="text-end">
+                                            <button type="button" class="btn btn-primary px-4" onclick="saveRecord()">
+                                                <i class="fas fa-save me-1"></i>保存
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="card shadow-sm">
+                                <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0"><i class="fas fa-list me-2"></i><span id="listTitle">今日记录</span></h5>
+                                    <div class="d-flex gap-2">
+                                        <input type="text" class="form-control form-control-sm" id="filterKeyword"
+                                            placeholder="搜索..." style="width: 150px;">
+                                        <button class="btn btn-sm btn-light" onclick="loadRecords()">刷新</button>
+                                    </div>
+                                </div>
+                                <div class="card-body p-0">
+                                    <div id="recordsList" class="list-group list-group-flush"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="report" role="tabpanel" aria-labelledby="report-tab">
+                    <div class="container">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">生成 AI 周报</h5>
+                                <div class="row g-3 align-items-center mb-4">
+                                    <div class="col-auto">
+                                        <label for="reportStartDate" class="col-form-label">开始日期</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input type="date" id="reportStartDate" class="form-control">
+                                    </div>
+                                    <div class="col-auto">
+                                        <label for="reportEndDate" class="col-form-label">结束日期</label>
+                                    </div>
+                                    <div class="col-auto">
+                                        <input type="date" id="reportEndDate" class="form-control">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-primary" onclick="generateReport()" id="btnGenerate">
+                                            <span class="spinner-border spinner-border-sm d-none" role="status"
+                                                aria-hidden="true"></span>
+                                            生成周报
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="reportContent" class="form-label">周报内容（支持编辑）</label>
+                                    <textarea class="form-control" id="reportContent" rows="15"></textarea>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-primary" onclick="copyReport()">复制周报</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                    <div class="container">
+                        <div class="card shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+                                    <div>
+                                        <h5 class="card-title mb-1">AI 配置</h5>
+                                        <p class="text-muted mb-0">支持配置文本模型、视觉模型和 API Key，保存后立即生效。</p>
+                                    </div>
+                                    <span class="badge rounded-pill config-status-badge" id="configApiKeyStatus">未加载</span>
+                                </div>
+
+                                <div class="alert d-none" id="configAlert" role="alert"></div>
+
+                                <form id="aiConfigForm" onsubmit="return false;">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="textModel" class="form-label">文本模型</label>
+                                            <input type="text" id="textModel" class="form-control"
+                                                placeholder="例如：qwen-turbo">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="visionModel" class="form-label">视觉模型</label>
+                                            <input type="text" id="visionModel" class="form-control"
+                                                placeholder="例如：qwen-vl-max">
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="apiKey" class="form-label">API Key</label>
+                                            <input type="password" id="apiKey" class="form-control"
+                                                placeholder="留空表示保持当前值">
+                                            <div class="form-text" id="currentApiKeyHint">当前 Key：未加载</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex gap-2 mt-4">
+                                        <button type="button" class="btn btn-primary" id="saveConfigBtn"
+                                            onclick="saveAiConfig()">
+                                            <span class="spinner-border spinner-border-sm d-none me-1"
+                                                id="saveConfigSpinner" role="status" aria-hidden="true"></span>
+                                            保存配置
+                                        </button>
+                                        <button type="button" class="btn btn-outline-secondary"
+                                            onclick="loadAiConfig(true)">重新加载</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="ocrModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="fas fa-magic me-2"></i>AI 图片识别</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="ocrDropzone" class="mb-3">
+                        <input type="file" id="ocrFileInput" accept="image/*" class="d-none"
+                            onchange="handleFileSelect(this)">
+                        <div id="ocrDropContent">
+                            <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                            <p class="mb-1">点击选择图片，或将文件拖拽到此处</p>
+                            <p class="text-muted small">支持直接粘贴截图（Ctrl+V）</p>
+                        </div>
+                        <div id="ocrPreviewContainer" class="d-none">
+                            <img id="ocrPreviewImage" src="" alt="Preview">
+                            <div id="ocrRemoveBtn" onclick="clearOcrImage()">×</div>
+                        </div>
+                    </div>
+
+                    <div id="ocrResultContainer" class="d-none">
+                        <label class="form-label fw-bold">识别结果（可编辑）</label>
+                        <textarea class="form-control" id="ocrResultText" rows="6"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="btnOcrConfirm" onclick="confirmOcrResult()"
+                        disabled>
+                        <span class="spinner-border spinner-border-sm d-none me-1" id="ocrModalSpinner" role="status"
+                            aria-hidden="true"></span>
+                        <span id="btnOcrText">开始识别</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="tagModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">管理标签</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="tagForm" class="row g-2 mb-3">
+                        <input type="hidden" id="tagId">
+                        <div class="col-6">
+                            <input type="text" class="form-control" id="tagName" placeholder="标签名称" required>
+                        </div>
+                        <div class="col-4">
+                            <select class="form-select" id="tagColor">
+                                <option value="primary" class="text-primary">蓝色</option>
+                                <option value="danger" class="text-danger">红色</option>
+                                <option value="success" class="text-success">绿色</option>
+                                <option value="warning" class="text-warning">黄色</option>
+                                <option value="info" class="text-info">青色</option>
+                                <option value="secondary" class="text-secondary">灰色</option>
+                                <option value="dark" class="text-dark">黑色</option>
+                            </select>
+                        </div>
+                        <div class="col-2">
+                            <button type="button" class="btn btn-primary w-100" onclick="saveTag()">保存</button>
+                        </div>
+                    </form>
+
+                    <div class="list-group" id="tagList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/vendor/tinymce/tinymce.min.js"></script>
+    <script src="/static/vendor/fullcalendar/index.global.min.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+
+</html>

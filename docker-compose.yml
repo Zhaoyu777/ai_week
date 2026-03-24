@@ -1,0 +1,15 @@
+services:
+  ai-week:
+    build:
+      context: .
+    container_name: ai-week
+    restart: unless-stopped
+    ports:
+      - "5100:5100"
+    environment:
+      TZ: Asia/Shanghai
+      APP_ENV_FILE: /app/runtime/.env
+    volumes:
+      - ./data:/app/data
+      - ./backups:/app/backups
+      - ./runtime:/app/runtime
